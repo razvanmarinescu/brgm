@@ -35,12 +35,17 @@ source activate brgm
 ```
 
 ```
+conda install scikit-image==0.17.2
+```
+
+```
 conda install -c conda-forge opencv==4.2.0
 ```
 
 ```
 conda install -c anaconda scipy
 ```
+
 
 ```
 git clone https://github.com/razvanmarinescu/brgm.git 
@@ -51,4 +56,6 @@ git clone https://github.com/razvanmarinescu/brgm.git
 
 # Reconstructions with pre-trained networks
 
-
+```
+python recon.py recon-real-images --input=datasets/ffhq --tag=ffhq --network=models/ffhq.pkl --recontype=super-resolution
+```
