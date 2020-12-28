@@ -1,5 +1,5 @@
 # Code by Razvan Marinescu, razvan@csail.mit.edu
-# Adapted from NVIDIA's StyleGAN2 code: https://github.com/NVlabs/stylegan2
+# Adapted from the StyleGAN2 code: https://github.com/NVlabs/stylegan2
 
 import multiprocessing
 import os, os.path

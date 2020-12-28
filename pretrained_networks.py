@@ -1,19 +1,24 @@
-# Copyright (c) 2019, NVIDIA Corporation. All rights reserved.
-#
-# This work is made available under the Nvidia Source Code License-NC.
-# To view a copy of this license, visit
-# https://nvlabs.github.io/stylegan2/license.html
 
-"""List of pre-trained StyleGAN2 networks located on Google Drive."""
+"""List of pre-trained StyleGAN2 networks located on MIT Dropbox. Also includes the original StyleGAN2 networks trained by NVidia."""
 
 import pickle
 import dnnlib
 import dnnlib.tflib as tflib
+import os
 
 #----------------------------------------------------------------------------
 # StyleGAN2 Google Drive root: https://drive.google.com/open?id=1QHc-yF5C3DChRwSdZKcx1w6K8JvSxQi7
 
 gdrive_urls = {
+# Network trained by MIT team
+
+    'dropbox:ffhq.pkl' : 'https://dl.dropboxusercontent.com/s/jlgybz6nfhmpv54/ffhq.pkl',
+    'dropbox:xray.pkl' : 'https://dl.dropboxusercontent.com/s/gphxjioth6dn5kb/xray.pkl',
+    #'dropbox:brains.pkl' : 'https://www.dropbox.com/s/p9vgdcn5q3wpcuo/brains.pkl',
+    'dropbox:brains.pkl' : 'https://dl.dropboxusercontent.com/s/p9vgdcn5q3wpcuo/brains.pkl',
+
+
+# Networks trained by NVidia
     'gdrive:networks/stylegan2-car-config-a.pkl':                           'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/stylegan2-car-config-a.pkl',
     'gdrive:networks/stylegan2-car-config-b.pkl':                           'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/stylegan2-car-config-b.pkl',
     'gdrive:networks/stylegan2-car-config-c.pkl':                           'http://d36zk2xti64re0.cloudfront.net/stylegan2/networks/stylegan2-car-config-c.pkl',
@@ -60,9 +65,11 @@ def get_path_or_url(path_or_gdrive_path):
 #----------------------------------------------------------------------------
 
 _cached_networks = dict()
+#cache_dir = '.stylegan2-cache'
 
 def load_networks(path_or_gdrive_path):
     path_or_url = get_path_or_url(path_or_gdrive_path)
+
     if path_or_url in _cached_networks:
         return _cached_networks[path_or_url]
 
