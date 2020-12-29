@@ -35,6 +35,10 @@ import skimage.io
 runSerial = True
 #runSerial = False
 
+global D_GLIBCXX_USE_CXX11_ABI
+D_GLIBCXX_USE_CXX11_ABI = 0 # for Google Colab, use 0. On local cluster, you might need 1
+
+
 def constructForwardModel(recontype, imgSize, nrChannels, mask_dir, imgShort):
   if recontype == 'none':
     forward = ForwardNone(); forwardTrue = forward # no forward model, just image inversion
@@ -126,6 +130,10 @@ def recon_real_helper(network_pkl, img, mask_dir, num_snapshots, recontype):
     if not runSerial:
       sys.stdout = open('logs/' + str(os.getpid()) + ".out", "w")
       #sys.stderr = open(str(os.getpid()) + ".err", "w")
+
+    
+    global D_GLIBCXX_USE_CXX11_ABI
+    D_GLIBCXX_USE_CXX11_ABI = 0 # for Google Colab, use 0. On local cluster, you might need 1
 
     print('Loading networks from "%s"...' % network_pkl)
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
