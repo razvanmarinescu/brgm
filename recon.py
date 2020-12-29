@@ -35,13 +35,13 @@ import skimage.io
 runSerial = True
 #runSerial = False
 
-def constructForwardModel(recontype, imgSize, nrChannels, mask_dir, imgShort):
+def constructForwardModel(recontype, imgSize, nrChannels, mask_dir, imgShort, superres_factor):
   if recontype == 'none':
     forward = ForwardNone(); forwardTrue = forward # no forward model, just image inversion
 
   elif recontype == 'super-resolution':
     # Create downsampling forward corruption model
-    forward = ForwardDownsample(factor=16); forwardTrue = forward # res = target resolution
+    forward = ForwardDownsample(factor=superres_factor); forwardTrue = forward # res = target resolution
 
   elif recontype == 'inpaint':
     # Create forward model that fills in part of image with zeros (change the height/width to control the bounding box)
@@ -122,7 +122,7 @@ def checkDimensions(fakeImg, inputChannels, inputWidth, inputHeight):
 
 
 
-def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
+def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype, superres_factor):
     if not runSerial:
       sys.stdout = open('logs/' + str(os.getpid()) + ".out", "w")
       #sys.stderr = open(str(os.getpid()) + ".err", "w")
@@ -132,7 +132,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
     imgSize, nrChannelsNet, fakeImg = getImgSize(Gs)
     imgShort = img.split('/')[-1] # without full path
-    forward, forwardTrue = constructForwardModel(recontype, imgSize, nrChannelsNet, mask_dir, imgShort)
+    forward, forwardTrue = constructForwardModel(recontype, imgSize, nrChannelsNet, mask_dir, imgShort, superres_factor)
 
     print('Loading image "%s"...' % img)
     image = cv2.imread(img, cv2.IMREAD_UNCHANGED) # without this flat, cv2 automatically converts to 3-channels
@@ -158,7 +158,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     # save true image
     png_prefix = dnnlib.make_run_dir_path(imgShort[:-4] + '-')
     misc.save_image_grid(image, png_prefix + 'true.png', drange=[-1,1])
-    true = image # this is the true image
+    imgTrue = image # this is the true image
 
     # generate corrupted image, with true forward corruption model
     imgCorrupted = forwardTrue(tf.convert_to_tensor(image))
@@ -178,7 +178,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     return imgCorrupted, imgRecon, imgMerged, imgTrue
       
 
-def recon_real_images(network_pkl, input, masks, num_snapshots, recontype):
+def recon_real_images(network_pkl, input, masks, num_snapshots, recontype, superres_factor):
 
     img_list = get_img_list(input)
     num_images = len(img_list)
@@ -186,9 +186,9 @@ def recon_real_images(network_pkl, input, masks, num_snapshots, recontype):
       print('Processing image %d/%d' % (image_idx+1, num_images))
 
       if runSerial:
-        recon_real_one_img(network_pkl, img_list[image_idx], masks, num_snapshots, recontype)
+        recon_real_one_img(network_pkl, img_list[image_idx], masks, num_snapshots, recontype, superres_factor)
       else:
-        p = multiprocessing.Process(target=recon_real_one_img, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype])
+        p = multiprocessing.Process(target=recon_real_one_img, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype, superres_factor])
         p.start()
         p.join()        
 
@@ -236,6 +236,7 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
     recon_real_images_parser.add_argument('--num-gpus', type=int, help='Number of gpus (default: %(default)s)', default=1)
     recon_real_images_parser.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
     recon_real_images_parser.add_argument('--recontype', help='Type of reconstruction: "none" (normal image inversion), "super-resolution", "inpaint", "k-space-cs", "all" (default: %(default)s)', default='none', metavar='DIR')
+    recon_real_images_parser.add_argument('--superres-factor', help='Super-resolution factor: 2,4,8,16,32,64 (default: %(default)s)', type=int, default=4, metavar='DIR')
 
     args = parser.parse_args()
     subcmd = args.command
