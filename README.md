@@ -11,6 +11,9 @@
 
 # Bayesian Image Reconstruction using Deep Generative Models
 
+<span style="color:red"> Repository still under construction. Expected to be ready in early Jan. </span>
+
+
 ## News
 
 * Nov 2020: Uploaded article pre-print to [arXiv](https://arxiv.org/abs/2012.04567).
@@ -27,7 +30,7 @@ Download pre-trained models:
 # Installation with Anaconda
 
 ```
-conda create -n "brgm" python=3.6.8 tensorflow-gpu==1.15.0 requests==2.22.0 Pillow==6.2.1 numpy==1.17.4 
+conda create -n "brgm" python=3.6.8 tensorflow-gpu==1.15.0 requests==2.22.0 Pillow==6.2.1 numpy==1.17.4 scikit-image==0.17.2
 ```
 
 ```
@@ -35,11 +38,7 @@ source activate brgm
 ```
 
 ```
-conda install scikit-image==0.17.2
-```
-
-```
-conda install -c conda-forge opencv==4.2.0
+conda install -c menpo opencv
 ```
 
 ```
@@ -57,5 +56,5 @@ git clone https://github.com/razvanmarinescu/brgm.git
 # Reconstructions with pre-trained networks
 
 ```
-python recon.py recon-real-images --input=datasets/ffhq --tag=ffhq --network=models/ffhq.pkl --recontype=super-resolution
+python recon.py recon-real-images --input=datasets/ffhq --tag=ffhq --network=dropbox:ffhq.pkl --recontype=super-resolution
 ```
