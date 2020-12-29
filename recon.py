@@ -35,10 +35,6 @@ import skimage.io
 runSerial = True
 #runSerial = False
 
-global D_GLIBCXX_USE_CXX11_ABI
-D_GLIBCXX_USE_CXX11_ABI = 0 # for Google Colab, use 0. On local cluster, you might need 1
-
-
 def constructForwardModel(recontype, imgSize, nrChannels, mask_dir, imgShort):
   if recontype == 'none':
     forward = ForwardNone(); forwardTrue = forward # no forward model, just image inversion
@@ -126,15 +122,12 @@ def checkDimensions(fakeImg, inputChannels, inputWidth, inputHeight):
 
 
 
-def recon_real_helper(network_pkl, img, mask_dir, num_snapshots, recontype):
+def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     if not runSerial:
       sys.stdout = open('logs/' + str(os.getpid()) + ".out", "w")
       #sys.stderr = open(str(os.getpid()) + ".err", "w")
 
     
-    global D_GLIBCXX_USE_CXX11_ABI
-    D_GLIBCXX_USE_CXX11_ABI = 0 # for Google Colab, use 0. On local cluster, you might need 1
-
     print('Loading networks from "%s"...' % network_pkl)
     _G, _D, Gs = pretrained_networks.load_networks(network_pkl)
     imgSize, nrChannelsNet, fakeImg = getImgSize(Gs)
@@ -173,13 +166,16 @@ def recon_real_helper(network_pkl, img, mask_dir, num_snapshots, recontype):
     proj.set_network(Gs)
     project_image(proj, targets=imgCorrupted, png_prefix=png_prefix, num_snapshots=num_snapshots)
 
+    imgRecon = proj.get_clean_images()
     if recontype == 'inpaint':
       # for inpainting, also merge the reconstruction with target image
-      recon = proj.get_clean_images()
-      imgMerged = tf.where(forward.mask, recon, imgCorrupted).eval() # if true, then recon, else imgCorrupted
+      imgMerged = tf.where(forward.mask, imgRecon, imgCorrupted).eval() # if true, then recon, else imgCorrupted
       misc.save_image_grid(imgMerged, png_prefix + 'merged.png', drange=[-1,1])
-      
+    else:
+      imgMerged = None
 
+    return imgCorrupted, imgRecon, imgMerged
+      
 
 def recon_real_images(network_pkl, input, masks, num_snapshots, recontype):
 
@@ -189,9 +185,9 @@ def recon_real_images(network_pkl, input, masks, num_snapshots, recontype):
       print('Processing image %d/%d' % (image_idx+1, num_images))
 
       if runSerial:
-        recon_real_helper(network_pkl, img_list[image_idx], masks, num_snapshots, recontype)
+        recon_real_one_img(network_pkl, img_list[image_idx], masks, num_snapshots, recontype)
       else:
-        p = multiprocessing.Process(target=recon_real_helper, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype])
+        p = multiprocessing.Process(target=recon_real_one_img, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype])
         p.start()
         p.join()        
 
@@ -230,14 +226,6 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
 
     subparsers = parser.add_subparsers(help='Sub-commands', dest='command')
 
-    recon_generated_images_parser = subparsers.add_parser('recon-generated-images', help='Project generated images')
-    recon_generated_images_parser.add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
-    recon_generated_images_parser.add_argument('--seeds', type=_parse_num_range, help='List of random seeds', default=range(3))
-    recon_generated_images_parser.add_argument('--num-snapshots', type=int, help='Number of snapshots (default: %(default)s)', default=5)
-    recon_generated_images_parser.add_argument('--truncation-psi', type=float, help='Truncation psi (default: %(default)s)', default=1.0)
-    recon_generated_images_parser.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
-    recon_generated_images_parser.add_argument('--recontype', help='Type of reconstruction: "none" (normal image inversion), "super-resolution", "inpaint", "k-space-cs", "all" (default: %(default)s)', default='none', metavar='DIR')
-
     recon_real_images_parser = subparsers.add_parser('recon-real-images', help='Project real images')
     recon_real_images_parser.add_argument('--network', help='Network pickle filename', dest='network_pkl', required=True)
     recon_real_images_parser.add_argument('--input', help='Directory with input images', required=True)
@@ -267,7 +255,6 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
     tag = kwargs.pop('tag') 
 
     func_name_map = {
-        'recon-generated-images': 'recon.recon_generated_images',
         'recon-real-images': 'recon.recon_real_images'
     }
     dnnlib.submit_run(sc, func_name_map[subcmd], **kwargs)
