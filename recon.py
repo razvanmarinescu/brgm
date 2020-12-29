@@ -158,6 +158,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     # save true image
     png_prefix = dnnlib.make_run_dir_path(imgShort[:-4] + '-')
     misc.save_image_grid(image, png_prefix + 'true.png', drange=[-1,1])
+    true = image # this is the true image
 
     # generate corrupted image, with true forward corruption model
     imgCorrupted = forwardTrue(tf.convert_to_tensor(image))
@@ -174,7 +175,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype):
     else:
       imgMerged = None
 
-    return imgCorrupted, imgRecon, imgMerged
+    return imgCorrupted, imgRecon, imgMerged, imgTrue
       
 
 def recon_real_images(network_pkl, input, masks, num_snapshots, recontype):
