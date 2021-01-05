@@ -12,8 +12,6 @@
 # Bayesian Image Reconstruction using Deep Generative Models
 ### R. Marinescu, D. Moyer, P. Golland
 
-<span style="color:red"> Repository still under construction. Expected to be ready in early Jan. </span>
-
 
 For technical inquiries, please create a Github issue.
 For other inquiries, please contact Razvan Marinescu: razvan@csail.mit.edu
