@@ -16,6 +16,8 @@
 For technical inquiries, please create a Github issue.
 For other inquiries, please contact Razvan Marinescu: razvan@csail.mit.edu
 
+For a demo of our BRGM model, see the [Colab Notebook](https://colab.research.google.com/drive/1G7_CGPHZVGFWIkHOAke4HFg06-tNHIZ4?usp=sharing).
+
 ## News
 
 * **Dec 2020**: Pre-trained models now available on [MIT Dropbox](https://www.dropbox.com/sh/0rj092juxauivzv/AABQoEfvM96u1ehzqYgQoD5Va?dl=0).
@@ -23,7 +25,7 @@ For other inquiries, please contact Razvan Marinescu: razvan@csail.mit.edu
 
 ## Requirements
 
-Our method builds on the StyleGAN2 Tensorflow codebase, so our requirements are the same as for StyleGAN2:
+Our method, BRGM, builds on the StyleGAN2 Tensorflow codebase, so our requirements are the same as for StyleGAN2:
 * 64-bit Python 3.6 installation. We recommend Anaconda3 with numpy 1.14.3 or newer.
 * TensorFlow 1.14 (Windows and Linux) or 1.15 (Linux only). TensorFlow 2.x is not supported.
 On Windows you need to use TensorFlow 1.14, as the standard 1.15 installation does not include necessary C++ headers.

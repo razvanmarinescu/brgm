@@ -37,16 +37,16 @@ project:
 
 
 super-resolutionFFHQ:
-	python recon.py recon-real-images --input=datasets/ffhq --tag=ffhq --network=models/ffhq.pkl --recontype=super-resolution
+	python recon.py recon-real-images --input=datasets/ffhq --tag=ffhq --network=dropbox:ffhq.pkl --recontype=super-resolution
 
 
 # this toy dataset contains chst x-ray images from wikipedia
 inpaintXray:
-	python recon.py recon-real-images --input=datasets/xray --masks=masks/1024x1024 --tag=xray --network=models/xray.pkl --recontype=inpaint
+	python recon.py recon-real-images --input=datasets/xray --masks=masks/1024x1024 --tag=xray --network=dropbox:xray.pkl --recontype=inpaint
 
 # brains contains test images from the OASIS dataset only
 inpaintBrains:
-	python recon.py recon-real-images --input=datasets/brains --masks=masks/256x256 --tag=brains --network=models/brains.pkl --recontype=inpaint
+	python recon.py recon-real-images --input=datasets/brains --masks=masks/256x256 --tag=brains --network=dropbox:brains.pkl --recontype=inpaint
 
 
 
