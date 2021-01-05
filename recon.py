@@ -254,7 +254,7 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
     sc.run_dir_root = kwargs.pop('result_dir')
     print('args:', args)
     command = kwargs.pop('command') 
-    sc.run_desc = command + '%s-%s' %( args.tag, args.recontype)
+    sc.run_desc = '%s-%s' %( args.tag, args.recontype)
     tag = kwargs.pop('tag') 
 
     func_name_map = {
