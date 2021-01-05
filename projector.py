@@ -17,8 +17,8 @@ vggDownscale = True
 #----------------------------------------------------------------------------
 
 class Projector:
-    def __init__(self, forward=None):
-        self.num_steps                  = 5000
+    def __init__(self, forward=None, num_steps=5000):
+        self.num_steps                  = num_steps
         self.dlatent_avg_samples        = 10000
         self.initial_learning_rate      = 0.1
         self.initial_noise_factor       = 0.05

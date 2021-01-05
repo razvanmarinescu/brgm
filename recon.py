@@ -122,7 +122,7 @@ def checkDimensions(fakeImg, inputChannels, inputWidth, inputHeight):
 
 
 
-def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype, superres_factor):
+def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype, superres_factor, num_steps):
     if not runSerial:
       sys.stdout = open('logs/' + str(os.getpid()) + ".out", "w")
       #sys.stderr = open(str(os.getpid()) + ".err", "w")
@@ -163,7 +163,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype, sup
     # generate corrupted image, with true forward corruption model
     imgCorrupted = forwardTrue(tf.convert_to_tensor(image))
     imgCorrupted = imgCorrupted.eval()
-    proj = projector.Projector(forward)
+    proj = projector.Projector(forward, num_steps)
     proj.set_network(Gs)
     project_image(proj, targets=imgCorrupted, png_prefix=png_prefix, num_snapshots=num_snapshots)
 
@@ -178,7 +178,7 @@ def recon_real_one_img(network_pkl, img, mask_dir, num_snapshots, recontype, sup
     return imgCorrupted, imgRecon, imgMerged, imgTrue
       
 
-def recon_real_images(network_pkl, input, masks, num_snapshots, recontype, superres_factor):
+def recon_real_images(network_pkl, input, masks, num_snapshots, recontype, superres_factor, num_steps):
 
     img_list = get_img_list(input)
     num_images = len(img_list)
@@ -186,9 +186,9 @@ def recon_real_images(network_pkl, input, masks, num_snapshots, recontype, super
       print('Processing image %d/%d' % (image_idx+1, num_images))
 
       if runSerial:
-        recon_real_one_img(network_pkl, img_list[image_idx], masks, num_snapshots, recontype, superres_factor)
+        recon_real_one_img(network_pkl, img_list[image_idx], masks, num_snapshots, recontype, superres_factor, num_steps)
       else:
-        p = multiprocessing.Process(target=recon_real_one_img, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype, superres_factor])
+        p = multiprocessing.Process(target=recon_real_one_img, args=[network_pkl, dataset_name, img_list[image_idx], masks, num_snapshots, recontype, superres_factor, num_steps])
         p.start()
         p.join()        
 
@@ -235,8 +235,9 @@ Run 'python %(prog)s <subcommand> --help' for subcommand help.''',
     recon_real_images_parser.add_argument('--num-snapshots', type=int, help='Number of snapshots (default: %(default)s)', default=20)
     recon_real_images_parser.add_argument('--num-gpus', type=int, help='Number of gpus (default: %(default)s)', default=1)
     recon_real_images_parser.add_argument('--result-dir', help='Root directory for run results (default: %(default)s)', default='results', metavar='DIR')
-    recon_real_images_parser.add_argument('--recontype', help='Type of reconstruction: "none" (normal image inversion), "super-resolution", "inpaint", "k-space-cs", "all" (default: %(default)s)', default='none', metavar='DIR')
-    recon_real_images_parser.add_argument('--superres-factor', help='Super-resolution factor: 2,4,8,16,32,64 (default: %(default)s)', type=int, default=4, metavar='DIR')
+    recon_real_images_parser.add_argument('--recontype', help='Type of reconstruction: "none" (normal image inversion), "super-resolution", "inpaint" (default: %(default)s)', default='none')
+    recon_real_images_parser.add_argument('--superres-factor', help='Super-resolution factor: 2,4,8,16,32,64 (default: %(default)s)', type=int, default=4)
+    recon_real_images_parser.add_argument('--num-steps', help='Number of iteration steps: <1000 (fast) to 5000 (slow, but better results)  (default: %(default)s)', type=int, default=5000)
 
     args = parser.parse_args()
     subcmd = args.command
