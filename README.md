@@ -23,7 +23,6 @@ For other inquiries, please contact Razvan Marinescu: razvan@csail.mit.edu
 * Nov 2020: Uploaded article pre-print to [arXiv](https://arxiv.org/abs/2012.04567).
 
 
-Try BRGM on [Google Colab](https://colab.research.google.com/drive/1qnNGxC5cAmwi3IyJOACtXK2HIJa2lENw?usp=sharing)
 
 ## Pre-trained models available on [MIT Dropbox](https://www.dropbox.com/sh/0rj092juxauivzv/AABQoEfvM96u1ehzqYgQoD5Va?dl=0).
 
@@ -108,4 +107,9 @@ python dataset_tool.py create_from_images ~/datasets/my-custom-dataset ~/my-cust
 python run_training.py --num-gpus=8 --data-dir=datasets --config=config-e --dataset=my-custom-dataset --mirror-augment=true
 ```
 
+## Trained networks
 
+
+| Network      | Dataset  | Number of input images  | Training time  | Description |
+| :---------- | :------------: | :----: | :-----: | :----: | :---------- |
+| ffhq.pkl | FFHQ | 60,000 (90\%) | 9 days  | Network trained on the first
