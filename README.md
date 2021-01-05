@@ -67,9 +67,6 @@ Clone this github repository:
 git clone https://github.com/razvanmarinescu/brgm.git 
 ```
 
-## Installation with Docker
-
-
 ## Image reconstruction with pre-trained StyleGAN2 generators
 
 
