@@ -20,7 +20,7 @@ For a demo of our BRGM model, see the [Colab Notebook](https://colab.research.go
 
 ## News
 
-* **Feb 2021**: Updated methods section in arXiv paper. We now start from the full Bayesian formulation, and derive the loss function from the MAP estimate (in appendix), and show the graphical model. Code didn't change in this update.
+* **Feb 2021**: Updated methods section in [arXiv paper](https://arxiv.org/abs/2012.04567). We now start from the full Bayesian formulation, and derive the loss function from the MAP estimate (in appendix), and show the graphical model. Code didn't change in this update.
 * **Dec 2020**: Pre-trained models now available on [MIT Dropbox](https://www.dropbox.com/sh/0rj092juxauivzv/AABQoEfvM96u1ehzqYgQoD5Va?dl=0).
 * **Nov 2020**: Uploaded article pre-print to [arXiv](https://arxiv.org/abs/2012.04567).
 
