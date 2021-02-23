@@ -20,6 +20,7 @@ For a demo of our BRGM model, see the [Colab Notebook](https://colab.research.go
 
 ## News
 
+* **Feb 2021**: Updated arXiv paper now includes full Bayesian formulation, derivation of the loss function, and the graphical model. Code didn't change.
 * **Dec 2020**: Pre-trained models now available on [MIT Dropbox](https://www.dropbox.com/sh/0rj092juxauivzv/AABQoEfvM96u1ehzqYgQoD5Va?dl=0).
 * **Nov 2020**: Uploaded article pre-print to [arXiv](https://arxiv.org/abs/2012.04567).
 
