@@ -11,6 +11,8 @@
 
 # Bayesian Image Reconstruction using Deep Generative Models
 ### R. Marinescu, D. Moyer, P. Golland
+---
+
 
 **Updated BRGM implementation in PyTorch [here](https://github.com/razvanmarinescu/brgm-pytorch). This also includes the Variational Inference extension**
 
