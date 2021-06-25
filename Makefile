@@ -33,7 +33,7 @@ project:
 
 ######### Image reconstruction #################
 
-# recontype =  "super-resolution", "inpaint", "k-space-cs", "all"
+# recontype =  "super-resolution", "inpaint"
 
 
 super-resolutionFFHQ:
